@@ -11,6 +11,12 @@ void print_bigint(const bigint *n)
 	printf("\n");
 }
 
+void zero_justify(bigint *n)
+{
+	if ((n->digits == 0) && (n->digits[0] == 0))
+    	n->signbit = PLUS;
+}
+
 void init_bigint(const char *input, int input_length, bigint *out)
 {
     int i;
@@ -31,6 +37,7 @@ void init_bigint(const char *input, int input_length, bigint *out)
         out->digits[i] = input[j] - '0';
     }
 	out->len = input_length;
+    out->signbit = PLUS;
 }
 
 static void sub(bigint *a, bigint *b, bigint *out, int len)
@@ -73,7 +80,7 @@ void subtract_bigint(bigint *a, bigint *b, bigint *c)
     }
     else
     {
-        for (int i = 0; i < len;)
+        for (int i = 0; i < len; i++)
         {
             if (a->digits[i] > b->digits[i])
             {
@@ -104,12 +111,19 @@ void subtract_bigint(bigint *a, bigint *b, bigint *c)
 
 void add_bigint(bigint *in0, bigint *in1)
 {
+    int signbit;
+    static bigint out;
+
     if (!in0 || !in1)
     {
         printf("Error, in0 == NULL || in1 == NULL || out == NULL, %s %s %d", \
                  __FILE__, __func__, __LINE__);
         return;
     }
+
+    memset(out.digits, 0, MAXINPUT);
+    out.len = in0->len;
+
 	int len = max(in0->len, in1->len);
     
     for (int i = 0; i < len; i++)
@@ -141,4 +155,43 @@ void mult_bigint(bigint *a, bigint *b, bigint *c)
     // while (c->digits[length] == 0)
     //     length-- ;
     c->len = length;
+}
+
+int base_calc(bigint *in0)
+{
+    int i, base;
+
+    for (i = in0->len; i > 0; i--)
+    {
+        if (i % 3 == 0)
+            base++;
+    }
+    return base;
+}
+
+void tenpow(bigint *n, int d)
+{
+	int i;
+
+    if ((n->len == 0) && (n->digits[0] == 0)) return;
+
+	for (i=n->len; i>=0; i--)
+		n->digits[i+d] = n->digits[i];
+
+	for (i=0; i<d; i++) n->digits[i] = 0;
+
+	n->len = n->len + d;
+}
+
+void bii_division(bigint *in0, long long in_b, long long in_base)
+{
+    int carry = 0;
+    int base = in_base;
+    int b = in_b;
+    for (int i = in0->len - 1; i >= 0; --i)
+    {
+        long long cur = in0->digits[i] + carry * 1ll * base;
+        in0->digits[i] = (int)(cur / b);
+        carry = (int)(cur % b);
+    }
 }

@@ -19,6 +19,9 @@
     ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
        _a < _b ? _a : _b;})
+
+#define PLUS		1
+#define MINUS		-1
 /**
  *  bigint structure
  *  digits: array of int, contains input number
@@ -28,8 +31,23 @@
 typedef struct
 {
     uint32_t digits[MAXINPUT];
+    int signbit;
     int len;
 }bigint;
+
+/*x = x1 * B^m + x0;*/
+typedef struct
+{
+    uint32_t digits[MAXINPUT];
+    uint32_t x1[MAXINPUT/4];
+    uint32_t x0[MAXINPUT/4];
+    int len;
+    int base;
+    int m;
+}factored_num;
+
+int base_calc(bigint *in);
+void tenpow(bigint *n, int d);
 
 /**
  * init_bigint function, initialize bigint with user input
@@ -68,4 +86,13 @@ void print_bigint(const bigint *input);
  * out: output bigint, should be provided by caller
  */
 void subtract_bigint(bigint *in0, bigint *in1, bigint *out);
+
+/**
+ * bii_division function, multiply big number and scalar b
+ * in0: input bigint
+ * b: 2^64-1 number
+ * base: base of b 
+ * out: output put in in0
+ */
+void bii_division(bigint *n, long long b, long long base);
 #endif // BIGINTEGER_H
