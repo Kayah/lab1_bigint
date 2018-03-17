@@ -15,9 +15,10 @@
        __typeof__ (b) _b = (b); \
        _a > _b ? _a : _b;})
 
-#define PLUS    1
-#define MINUS  -1
-
+#define min(a,b) \
+    ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+       _a < _b ? _a : _b;})
 /**
  *  bigint structure
  *  digits: array of int, contains input number
@@ -26,10 +27,8 @@
  */
 typedef struct
 {
-    int digits[MAXINPUT];
-    int signbit;
-    int lastdigit;
-
+    uint32_t digits[MAXINPUT];
+    int len;
 }bigint;
 
 /**
@@ -39,15 +38,14 @@ typedef struct
  * signbit: indicates negative or positive sign of the number(1 or -1)
  * out: output bigint, should be provided from caller
  */
-void init_bigint(const char *input, uint32_t input_length, int signbit, bigint *out);
+void init_bigint(const char *input, int input_length, bigint *out);
 
 /**
  * add_bigint function, add two big numbers
  * in0: input bigint
- * in1: input bigint
- * out: output bigint, should be provided by caller
+ * in1: input bigint, will contains output
  */
-void add_bigint(bigint *in0, bigint *in1, bigint *out);
+void add_bigint(bigint *in0, bigint *in1);
 
 /**
  * mult_bigint function, multiply two big numbers

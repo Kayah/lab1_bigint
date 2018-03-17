@@ -3,81 +3,18 @@
 */
 #include "biginteger.h"
 
-/**
- * zero_justify
- * input: input bigint
- */
-static void
-zero_justify(bigint *n)
+void print_bigint(const bigint *n)
 {
-	while ((n->lastdigit > 0) && (n->digits[ n->lastdigit ] == 0))
-		n->lastdigit --;
-
-    if ((n->lastdigit == 0) && (n->digits[0] == 0))
-		n->signbit = PLUS;
+    int i;
+	for (i=n->len-1; i>=0; i--)
+		printf("%d", n->digits[i]);
+	printf("\n");
 }
 
-/**
- * shift function, 
- * n: input bigint
- * d: 
- */
-static void
-shift(bigint *in, int d)
+void init_bigint(const char *input, int input_length, bigint *out)
 {
-    if (!in)
-        return;
-
-    if ((in->lastdigit == 0) && (in->digits[0] == 0))
-        return;
-
-    for (int i = in->lastdigit; i >= 0; i--)
-        in->digits[i+d] = in->digits[i];
-    
-    for (int i = 0; i < d; i++)
-        in->digits[i] = 0;
-
-    in->lastdigit = in->lastdigit + d;
-}
-
-/**
- * compare_bigint
- * input: *a bigint, *b bigint
- */
-static int
-compare_bigint(bigint *a, bigint *b)
-{
-	int i;		
-
-	if ((a->signbit == MINUS) && (b->signbit == PLUS)) return(PLUS);
-	if ((a->signbit == PLUS) && (b->signbit == MINUS)) return(MINUS);
-
-	if (b->lastdigit > a->lastdigit) return (PLUS * a->signbit);
-	if (a->lastdigit > b->lastdigit) return (MINUS * a->signbit);
-
-	for (i = a->lastdigit; i>=0; i--) {
-		if (a->digits[i] > b->digits[i]) return(MINUS * a->signbit);
-		if (b->digits[i] > a->digits[i]) return(PLUS * a->signbit);
-	}
-
-	return 0;
-}
-
-void
-print_bigint(const bigint *input)
-{
-    for(int i = input->lastdigit; i >= 0; i--)
-    {
-        printf("%d", input->digits[i]);
-    }
-    printf("\n");
-}
-
-void
-init_bigint(const char *input, uint32_t input_length, int signbit, bigint *out)
-{
-    uint32_t i;
-    uint32_t j;
+    int i;
+    int j;
     
     if (!input || (input_length == 0))
     {
@@ -88,127 +25,120 @@ init_bigint(const char *input, uint32_t input_length, int signbit, bigint *out)
     {
         printf("Error, input_length > MAXINPUT, %s %s %d", __FILE__, __func__, __LINE__);
     }
-
-    if (signbit > 0) 
-        out->signbit = PLUS;
-    else 
-        out->signbit = MINUS;
-    
+	
     for (i = 0, j = input_length-1; i < input_length; i++, j--)
     {
-        out->digits[i] = input[j]-'0';
+        out->digits[i] = input[j] - '0';
     }
-    out->lastdigit = input_length;
+	out->len = input_length;
 }
 
-void
-subtract_bigint(bigint *a, bigint *b, bigint *c)
+static void sub(bigint *a, bigint *b, bigint *out, int len)
 {
-	int borrow;			
-	int v;				
-	int i;				
-
-	memset(c->digits, 0, MAXINPUT);
-
-	if ((a->signbit == MINUS) || (b->signbit == MINUS)) {
-                b->signbit = -1 * b->signbit;
-                add_bigint(a,b,c);
-                b->signbit = -1 * b->signbit;
-		return;
+    for (int i = 0; i < len; i++)
+    {
+        if (i < len)
+        {
+            a->digits[i + 1]--;
+            out->digits[i] += 10 + a->digits[i];
+        }
+        else
+        {
+            out->digits[i] += a->digits[i];
         }
 
-	if (compare_bigint(a,b) == PLUS) {
-		subtract_bigint(b,a,c);
-		c->signbit = MINUS;
-		return;
+        out->digits[i] -= b->digits[i];
+
+        if ((out->digits[i] / 10) > 0)
+        {
+            out->digits[i + 1]++;
+            out->digits[i] %= 10;
+        }
+    }
+	out->len = len;   
+}
+
+void subtract_bigint(bigint *a, bigint *b, bigint *c)
+{
+	int k = 3;
+    int len = a->len;
+    if (a->len > b->len)
+    {
+        k = 1;
+    }
+    else if (b->len > a->len)
+    {
+        len = b->len;
+        k = 2;
+    }
+    else
+    {
+        for (int i = 0; i < len;)
+        {
+            if (a->digits[i] > b->digits[i])
+            {
+                k = 1;
+                break;
+            }
+
+            if (b->digits[i] > a->digits[i])
+            {
+                k = 2;
+                break;
+            }
+        }
+    }
+	switch(k) {
+		case 1:	
+			sub(a, b, c, a->len);
+			break;
+		case 2:
+			sub(b, a, c, b->len);
+			break;
+		case 3:
+			c->len = 0;
+			memset(c->digits, 0, MAXINPUT);
+			break;
 	}
-
-        c->lastdigit = max(a->lastdigit,b->lastdigit);
-        borrow = 0;
-
-        for (i=0; i<=(c->lastdigit); i++) {
-		v = (a->digits[i] - borrow - b->digits[i]);
-		if (a->digits[i] > 0)
-			borrow = 0;
-		if (v < 0) {
-			v = v + 10;
-			borrow = 1;
-		}
-
-                c->digits[i] = (char) v % 10;
-        }
-
-	zero_justify(c);
 }
 
-void 
-add_bigint(bigint *in0, bigint *in1, bigint *out)
+void add_bigint(bigint *in0, bigint *in1)
 {
-    int i;
-    int carry;
-    int carry_last_digit;
-    int *digits_ptr;
-
-    if (!in0 || !in1 || !out)
+    if (!in0 || !in1)
     {
         printf("Error, in0 == NULL || in1 == NULL || out == NULL, %s %s %d", \
                  __FILE__, __func__, __LINE__);
         return;
     }
-    memset(out->digits, 0, MAXINPUT);
-
-    if (in0->signbit == in1->signbit) out->signbit = in0->signbit;
-	else {
-		if (in0->signbit == MINUS) {
-			in0->signbit = PLUS;
-			subtract_bigint(in1,in0,out);
-			in0->signbit = MINUS;
-		} else {
-                        in1->signbit = PLUS;
-                        subtract_bigint(in0,in1,out);
-                        in1->signbit = MINUS;
-		}
-		return;
-	}
-
-    if (in0->lastdigit > in1->lastdigit)
-    {
-        carry_last_digit = in1->lastdigit;
-        digits_ptr = in0->digits;
-    }
-    else
-    {
-        carry_last_digit = in0->lastdigit;
-        digits_ptr = in1->digits;
-    }
+	int len = max(in0->len, in1->len);
     
-    out->lastdigit = max(in0->lastdigit, in1->lastdigit) + 1;    
-
-    for (i = 0, carry = 0; i <= out->lastdigit; i++)
+    for (int i = 0; i < len; i++)
     {
-        out->digits[i] = (carry + in0->digits[i] + in1->digits[i]) % 10;
-        carry = (carry + in0->digits[i] + in1->digits[i]) / 10;
+        in1->digits[i] += in0->digits[i];
+        in1->digits[i+1] += (in1->digits[i] / 10);
+        in1->digits[i] %= 10;
     }
-    zero_justify(out);
+
+    if (in1->digits[len -1] == 0)
+        len--;
+	in1->len = len;
 }
 
-void
-mult_bigint(bigint *a, bigint *b, bigint *c)
+void mult_bigint(bigint *a, bigint *b, bigint *c)
 {
-    bigint row;			
-	bigint tmp;			
-	
-    if (!a || !b || !c)
-        return;
-
-    row = *a;
-
-	for (int i=0; i<=b->lastdigit; i++) {
-		for (int j=1; j<=b->digits[i]; j++) {
-            add_bigint(c,&row,&tmp);
-			*c = tmp;
-		}
-		shift(&row,1);
-	}
-    zero_justify(c);
+	int length = a->len + b->len;
+ 
+    for (int ix = 0; ix < a->len; ix++)
+        for (int jx = 0; jx <  b->len; jx++)
+            c->digits[ix + jx] += a->digits[ix] * b->digits[jx];
+    
+    for (int ix = 0; ix < length; ix++)
+    {
+        c->digits[ix + 1] +=  c->digits[ix] / 10;
+        c->digits[ix] %= 10;
+    }
+    
+    // while (c->digits[length] == 0)
+    //     length-- ;
+    c->len = length;
 }

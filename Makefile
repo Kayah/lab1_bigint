@@ -1,18 +1,29 @@
-CC=clang-3.8
-SRCS=main.c biginteger.c
+CC=gcc
+CXX=g++
+SRCS= biginteger.c
+SRCXXS = main.cpp bigintarithmetic.cpp
 OBJS=$(SRCS:.c=.o)
+OBJS+=$(SRCXXS:.cpp=.o)
 MAIN=lab1
 # CFLAGS= -O3 -Werror -fcolor-diagnostics -fsanitize=memory -fsanitize=undefined
-CFLAGS=
+# CFLAGS=
 LFLAGS=
 LIBS=
+
+ifeq ($(DEBUG), y)
+CFLAGS += -DDEBUG
+endif
+
 build: $(MAIN)
 
 $(MAIN): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
+	$(CXX) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+.cpp.o:
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	rm *.o $(MAIN)
