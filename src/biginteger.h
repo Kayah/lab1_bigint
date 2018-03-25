@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <iostream>
 
 #define MAXINPUT 512 /*maximum input size(bytes) of number*/
 #define PLUS		1
@@ -85,4 +86,7 @@ void subtract_bigint(bigint *in0, bigint *in1, bigint *out);
  * out: output put in in0
  */
 void bii_division(bigint *n, long long b, long long base);
+
+uint64_t bii_mod(bigint *in0, int p);
+void bii_mult(bigint *in0, uint64_t b);
 #endif // BIGINTEGER_H

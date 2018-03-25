@@ -194,3 +194,30 @@ void bii_division(bigint *in0, long long in_b, long long in_base)
         carry = (int)(cur % b);
     }
 }
+
+uint64_t bii_mod(bigint *in0, int p)
+{
+    uint64_t ret = 0;
+    int j = 0;
+    for (int i = 0, j = in0->len-1; i < in0->len; i++, j--)
+        ret = (ret * 10 + in0->digits[j]) % p;
+    return ret;
+}
+
+void bii_mult(bigint *in0, uint64_t b)
+{
+    int carry = 0;
+    uint32_t i;
+    // print_bigint(in0);
+    // std::cout << "!!!!\n";
+    // for (int i = 0; i < MAXINPUT; i++)
+    //     std::cout << in0->digits[i];
+    // std::cout<<" mult on " << b << std::endl;
+    for (i = 0; i < in0->len || carry; i++)
+    {
+        uint64_t cur = carry + in0->digits[i] * 1ll * b;
+        in0->digits[i] = cur % 10;
+        carry = cur / 10;
+    }
+    in0->len = i;
+}

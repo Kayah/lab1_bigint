@@ -11,7 +11,7 @@ GTEST_DIR = googletest/googletest
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
-CXXFLAGS += -O3 -g -Wall -Wextra -pthread 
+CXXFLAGS += -g -Wall -Wextra -pthread 
 
 LDFLAGS = -lpthread
 

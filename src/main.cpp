@@ -66,6 +66,12 @@ public:
         return memcmp(buf, tmp, len);
     }
 
+    uint64_t mod(char *input, int p)
+    {
+        init_bigint(input, strlen((const char *)input), &in0);
+        return bii_mod(&in0, p);
+    }
+
 private:
     void init_test_case(char *input1, char *input2)
     {
@@ -128,6 +134,33 @@ TEST(Lab_tests, TEST_2_MULT)
     ASSERT_EQ(0, a.compare(expected, expected_len));
 }
 
+TEST(Lab_tests, TEST_1_SchonhageStrassenMultiplication)
+{
+    char *input1 = "12345";
+    int a =12345;
+    int b =12345;
+    char *input2 = "12345";
+    int n = 5;
+    int m = 5;
+    bigint in0, in1;
+    memset(in0.digits, 0, MAXINPUT);
+    init_bigint(input1, strlen((const char *)input1), &in0);
+    init_bigint(input2, strlen((const char *)input2), &in1);
+    // bii_mult(&in0, 12345);
+    schonhageStrassenMultiplication(&in0,&in1,n,m);
+    sample(a,b,n,m);
+
+}
+
+TEST(Lab_tests, TEST_1_MOD)
+{
+    Lab_tests a;
+    char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    uint64_t ret = a.mod(input1, 11);
+    ASSERT_EQ(7, ret);
+}
+
+
 #ifdef USE_GMP
 TEST(Lab_tests, TEST_3_MULT)
 {
@@ -169,6 +202,6 @@ int main(int argc, char **argv)
     printf("Running main()\n");
 
 	testing::InitGoogleTest(&argc, argv);
-
+    
 	return RUN_ALL_TESTS();
 }
