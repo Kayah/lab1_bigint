@@ -3,9 +3,7 @@
 #include <gmpxx.h>
 /*
 *   TODO: fix buf with compare function for karatsuba multiplication
-*   TODO: Add OPEN_MP
 *   TODO: Add Google Benchmark for testing perfomance
-*   TODO: Add MPI, GMP, BOOST lib to compare with bigint implementation
 *   TODO: Add divisio for bigints
 */
 

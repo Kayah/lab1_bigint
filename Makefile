@@ -11,7 +11,7 @@ GTEST_DIR = googletest/googletest
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
-CXXFLAGS += -g -Wall -Wextra -pthread 
+CXXFLAGS += -O3 -g -Wall -Wextra -pthread 
 
 LDFLAGS = -lpthread
 
@@ -20,6 +20,15 @@ ifeq (, $(shell locate gmp))
 $(error "gmp is not installed, please do apt-get install libgmp3-dev")
 else 
 LDFLAGS+=-lgmp
+endif
+endif
+
+ifeq ($(USE_OPEN_MP), y)
+ifeq (, $(shell locate gomp))
+$(error "OPEN_MP is not installed, please do apt-get install gcc-multilib")
+else 
+LDFLAGS+=-lgomp
+CXXFLAGS+= -fopenmp
 endif
 endif
 

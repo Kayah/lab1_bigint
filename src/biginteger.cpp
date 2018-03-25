@@ -111,7 +111,6 @@ void subtract_bigint(bigint *a, bigint *b, bigint *c)
 
 void add_bigint(bigint *in0, bigint *in1)
 {
-    int signbit;
     static bigint out;
 
     if (!in0 || !in1)
@@ -125,7 +124,7 @@ void add_bigint(bigint *in0, bigint *in1)
     out.len = in0->len;
 
 	int len = std::max(in0->len, in1->len);
-    
+
     for (int i = 0; i < len; i++)
     {
         in1->digits[i] += in0->digits[i];
@@ -141,15 +140,14 @@ void add_bigint(bigint *in0, bigint *in1)
 void mult_bigint(bigint *a, bigint *b, bigint *c)
 {
 	int length = a->len + b->len;
- 
-    for (int ix = 0; ix < a->len; ix++)
-        for (int jx = 0; jx <  b->len; jx++)
-            c->digits[ix + jx] += a->digits[ix] * b->digits[jx];
+    for (int i = 0; i < a->len; i++)
+        for (int j = 0; j <  b->len; j++)
+            c->digits[i + j] += a->digits[i] * b->digits[j];
     
-    for (int ix = 0; ix < length; ix++)
+    for (int i = 0; i < length; i++)
     {
-        c->digits[ix + 1] +=  c->digits[ix] / 10;
-        c->digits[ix] %= 10;
+        c->digits[i + 1] +=  c->digits[i] / 10;
+        c->digits[i] %= 10;
     }
     
     // while (c->digits[length] == 0)
@@ -159,7 +157,8 @@ void mult_bigint(bigint *a, bigint *b, bigint *c)
 
 int base_calc(bigint *in0)
 {
-    int i, base;
+    int i = 0;
+    int base = 0;
 
     for (i = in0->len; i > 0; i--)
     {
