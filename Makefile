@@ -66,4 +66,8 @@ gtest_main.a : gtest-all.o gtest_main.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(TESTS): $(OBJS) gtest_main.a
+<<<<<<< HEAD
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+=======
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+>>>>>>> 100a88b6581be2cd406078c562b68c7b50c9c247
