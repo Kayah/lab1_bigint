@@ -89,4 +89,5 @@ void bii_division(bigint *n, long long b, long long base);
 
 uint64_t bii_mod(bigint *in0, int p);
 void bii_mult(bigint *in0, uint64_t b);
+void int_to_bigint(uint64_t s, bigint *n);
 #endif // BIGINTEGER_H

@@ -17,6 +17,21 @@ void zero_justify(bigint *n)
     	n->signbit = PLUS;
 }
 
+void int_to_bigint(uint64_t s, bigint *n)
+{
+	int i;				
+	int t = 0;
+    memset(n->digits, 0, MAXINPUT);
+	for (i = 0; i < MAXINPUT; i++) n->digits[i] =  0;
+	t = s;
+    n->len = 0;
+	while (t > 0) {
+		n->digits[ n->len ] = (t % 10);
+		t = t / 10;
+        ++n->len;
+	}
+}
+
 void init_bigint(const char *input, int input_length, bigint *out)
 {
     int i;
