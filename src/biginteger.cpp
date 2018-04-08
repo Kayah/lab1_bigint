@@ -2,7 +2,8 @@
 ** file: biginteger.h
 */
 #include "biginteger.h"
-
+using std::cout;
+using std::endl;
 void print_bigint(const bigint *n)
 {
     int i;
@@ -30,6 +31,14 @@ void int_to_bigint(uint64_t s, bigint *n)
 		t = t / 10;
         ++n->len;
 	}
+}
+
+void copy_bigint(bigint *s, bigint *d)
+{
+	memset(d->digits, 0, MAXINPUT);
+    d->len = s->len;
+    for (int i = d->len; i >= 0; i--)
+        d->digits[i] = s->digits[i];
 }
 
 void init_bigint(const char *input, int input_length, bigint *out)
@@ -149,7 +158,7 @@ void add_bigint(bigint *in0, bigint *in1)
 
     if (in1->digits[len -1] == 0)
         len--;
-	in1->len = len;
+	in1->len = len+1;
 }
 
 void mult_bigint(bigint *a, bigint *b, bigint *c)

@@ -87,4 +87,30 @@ void karatsuba_multiplication(char *inx, char *iny, bigint *out)
     out->len = s2.len;
 }
 
+void toom_cook_multiplication(char *inx, char *iny, bigint *out)
+{
+    bigint m2, m1, m0, n2, n1, n0;
+    bigint p0, p1, p_1, p_2, p_8;
+    bigint q0, q1, q_1, q_2, q_8;
+    bigint f0, f1, f2, f3, f4;
+    bigint x, y;
+    bigint tmp;
+    init_bigint(inx, strlen(inx) - 16, &m2);
+    init_bigint(inx + 6, strlen(inx) - 14, &m1);
+    init_bigint(inx + 14, strlen(inx) - 14, &m0);
 
+    init_bigint(iny, strlen(iny) - 16, &n2);
+    init_bigint(iny + 5, strlen(iny) - 13, &n1);
+    init_bigint(iny + 13, strlen(iny) - 13, &n0);
+    //p0 = m0
+    copy_bigint(&m0, &p0);
+    //p1 = m0+m1+m2
+    copy_bigint(&m1, &p1);
+    add_bigint(&m0, &p1);
+    add_bigint(&m2, &p1);
+    //p_1 = m0 - m1 + m2
+    subtract_bigint(&m0, &m1, &p_1);    
+    print_bigint(&p_1);
+    cout << p_1.signbit << endl;
+    //TODO add signbit check for substract and add
+}

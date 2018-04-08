@@ -15,4 +15,5 @@ using std::max;
 #define MAX_N 401
 void karatsuba_multiplication(char *in0, char *in1, bigint *out);
 void fft_multiply(const std::vector<int> & a, const std::vector<int> & b, std::vector<int> & res);
+void toom_cook_multiplication(char *inx, char *iny, bigint *out);
 #endif
