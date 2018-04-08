@@ -11,9 +11,9 @@ GTEST_DIR = googletest/googletest
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
-CXXFLAGS += -std=c++11 -g -Wall -Wextra -pthread 
+CXXFLAGS += -std=c++11 -g -Wall -Wextra -pthread
 
-LDFLAGS = -lpthread
+LDFLAGS = -lpthread  
 
 ifeq ($(USE_GMP), y)
 ifeq (, $(shell locate gmp))
@@ -75,4 +75,4 @@ gtest_main.a : gtest-all.o gtest_main.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(TESTS): $(OBJS) gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lcrypto

@@ -1,5 +1,6 @@
 #include "bigintarithmetic.hpp"
 #include <iostream>
+#include <openssl/bn.h>
 #include <gmpxx.h>
 enum mult_type {SCHOOL_MULT = 0, KARATSUBA_MULT = 1, FFT_MULT = 2, TOOM_COOK_MULT = 3};
 class Lab_tests
@@ -189,10 +190,45 @@ TEST(Lab_tests, TEST_TOOM_COOK_MULT)
 // }
 // #endif
 
-// TEST(Lab_tests, TEST_MULT_OPENSSL)
-// {
+TEST(Lab_tests, TEST_MULT_OPENSSL)
+{
+    BIGNUM *bn1 = NULL;
+	BIGNUM *bn2 = NULL;
+	BIGNUM *result = BN_new();
+	BN_CTX *bn_ctx = BN_CTX_new();
+	
+	BN_dec2bn(&bn1, "423450987677999999919374659102");
+	BN_dec2bn(&bn2, "123456789012345678901234567890");
+		
+	BN_mul(result, bn2, bn1, bn_ctx);
+#ifdef DEBUG    
+	printf("Result is %s\n", BN_bn2dec(result));
+#endif
+	BN_free(bn1);
+	BN_free(bn2);
+	BN_free(result);
+    BN_CTX_free(bn_ctx);
+}
 
-// }
+TEST(Lab_tests, TEST_ADD_OPENSSL)
+{
+    BIGNUM *bn1 = NULL;
+	BIGNUM *bn2 = NULL;
+	BIGNUM *result = BN_new();
+	BN_CTX *bn_ctx = BN_CTX_new();
+	
+	BN_dec2bn(&bn1, "423450987677999999919374659102");
+	BN_dec2bn(&bn2, "123456789012345678901234567890");
+		
+	BN_add(result, bn2, bn1);
+#ifdef DEBUG
+	printf("Result is %s\n", BN_bn2dec(result));
+#endif		
+	BN_free(bn1);
+	BN_free(bn2);
+	BN_free(result);
+    BN_CTX_free(bn_ctx);
+}
 
 // TEST(Lab_tests, TEST_KARATSUBA_MULT_1)
 // {
