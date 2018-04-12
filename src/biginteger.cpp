@@ -95,33 +95,7 @@ static void sub(bigint *a, bigint *b, bigint *out, int len)
     }
 	out->len = len;   
 }
-// int compare_bigint(bigint *a, bigint *b)
-// {
-//     if (a->len > b->len)
-//     {
-//         return 1;
-//     } 
-//     else if (b->len > a->len)
-//     {
-//         return 2;
-//     }
-//     else
-//     {
-//         for (int i = 0; i < len; i++)
-//         {
-//             if (a->digits[i] > b->digits[i])
-//             {
-//                 return  1;
-//             }
 
-//             if (b->digits[i] > a->digits[i])
-//             {
-//                 k = 2;
-//                 break;
-//             }
-//         }
-//     }
-// }
 void subtract_bigint(bigint *a, bigint *b, bigint *c)
 {
 	int k = 3;
@@ -252,38 +226,7 @@ void LevelUp(bigint *n)
 
 void div_bigint (const bigint *a,  bigint *b)
 {
-//   bigint res, tmp;
-//   bigint curValue;
-//   for (int i = a->len - 1; i >= 0; i--)
-//   {
-//     LevelUp(&curValue);
-//     curValue.digits[0] = a->digits[i];
-//     // подбираем максимальное число x, такое что b * x <= curValue
-//     int x = 0;
-//     int l = 0, r = 10;
-//     while (l <= r)
-//     {
-//       int m = (l + r) >> 1;
-//       copy_bigint(b, &tmp);
-//       bii_mult(&tmp, m);
-//       if (cur <= curValue)
-//       {
-//         x = m;
-//         l = m+1;
-//       }
-//       else
-//         r = m-1;
-//     }
-//     res.digits[i] = x;
-//     curValue = curValue - b * x;
-//   }
-//   // избавляемся от лидирующих нулей
-//   int pos = a.amount;
-//   while (pos>=0 && !res.digits[pos])
-//     pos--;
-//   res.amount = pos+1;
- 
-//   return res;
+
 } 
 
 void bii_division(bigint *in0, long long in_b, long long in_base)
@@ -348,8 +291,6 @@ long modpow(long b, long e, long m) {
 
     while (e > 0) {
         if ((e & 1) == 1) {
-            /* multiply in this bit's contribution while using modulus to keep
-             * result small */
             result = (result * b) % m;
         }
         b = (b * b) % m;
