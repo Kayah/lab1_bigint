@@ -1,7 +1,7 @@
 #ifndef BIGINTEGER_H
 #define BIGINTEGER_H
 /* 
-** file: biginteger.h
+** file: biginteger.hpp
 */
 #include <string.h>
 #include <stdint.h>
@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define MAXINPUT 512 /*maximum input size(bytes) of number*/
+#define MAXINPUT 2048 /*maximum input size(bytes) of number*/
 #define PLUS		1
 #define MINUS		-1
 /**
@@ -26,16 +26,44 @@ typedef struct
     int len;
 }bigint;
 
-/*x = x1 * B^m + x0;*/
-typedef struct
-{
-    uint32_t digits[MAXINPUT];
-    uint32_t x1[MAXINPUT/4];
-    uint32_t x0[MAXINPUT/4];
-    int len;
-    int base;
-    int m;
-}factored_num;
+const int osn = 10;
+class bignum
+{  
+    bool isMinus;
+    int amount;
+    int digits[MAXINPUT];
+
+public:
+
+    bignum() : amount(1), isMinus(false)
+    {
+        memset(digits, 0, MAXINPUT);
+    }
+    ~bignum()
+    {}
+    bignum(const char *input, int amount, bool isMinus = false):amount(amount), isMinus(isMinus)
+    {
+        memset(digits, 0, MAXINPUT);
+        int i, j;
+        for (i = 0, j = amount-1; i < amount; i++, j--)
+        {
+            digits[i] = input[j] - '0';
+        }
+	    this->amount = amount;
+    }
+    void input();
+    void output();
+    void LevelUp();
+    friend bignum operator /(const bignum &a, const bignum &b);
+    friend bignum operator *(const bignum &a, const bignum &b);
+    friend bignum operator *(const bignum &a, const int &n);
+    friend bignum operator -(const bignum &a, const bignum &b);
+    friend bool operator == (const bignum &a, const bignum &b);
+    friend bool operator > (const bignum &a, const bignum &b);
+    friend bool operator < (const bignum &a, const bignum &b);
+    friend bignum operator % (const bignum &a, const bignum &b);
+    friend bignum minus(const bignum &a, const bignum &b);
+};
 
 int base_calc(bigint *in);
 void tenpow(bigint *n, int d);
@@ -91,4 +119,6 @@ uint64_t bii_mod(bigint *in0, int p);
 void bii_mult(bigint *in0, uint64_t b);
 void int_to_bigint(uint64_t s, bigint *n);
 void copy_bigint(bigint *s, bigint *d);
+void move_bigint(bigint *s, bigint *d);
+void modpow_bigint(bigint *b, uint32_t e, bigint *m);
 #endif // BIGINTEGER_H

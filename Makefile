@@ -14,12 +14,13 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -std=c++11 -g -Wall -Wextra -pthread
 
 LDFLAGS = -lpthread  
+LIB= -lcrypto
 
 ifeq ($(USE_GMP), y)
 ifeq (, $(shell locate gmp))
 $(error "gmp is not installed, please do apt-get install libgmp3-dev")
 else 
-LDFLAGS+=-lgmp
+LIB +=-lgmp
 endif
 endif
 
@@ -38,7 +39,12 @@ SOURCE_DIR = src
 
 SRCS= $(SOURCE_DIR)/bigintarithmetic.cpp \
 	  $(SOURCE_DIR)/biginteger.cpp\
-	  $(SOURCE_DIR)/main.cpp
+	  $(SOURCE_DIR)/main.cpp\
+	  $(SOURCE_DIR)/bignum.cpp 
+
+ifeq ($(USE_GMP), y)
+SRCS += $(SOURCE_DIR)/prg.cpp
+endif
 
 OBJS=$(SRCS:.cpp=.o)
 
@@ -71,8 +77,8 @@ gtest.a : gtest-all.o
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
-.cpp.o: $(SOURCE_DIR)/bigintarithmetic.h $(SOURCE_DIR)/biginteger.h $(GTEST_HEADERS)
+.cpp.o: $(SOURCE_DIR)/bigintarithmetic.h $(SOURCE_DIR)/biginteger.hpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(TESTS): $(OBJS) gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lcrypto
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LIB)

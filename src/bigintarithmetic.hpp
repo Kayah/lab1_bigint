@@ -1,6 +1,6 @@
 #ifndef BIGINTARITHMETIC_HPP
 #define BIGINTARITHMETIC_HPP
-#include "biginteger.h"
+#include "biginteger.hpp"
 #include <vector>
 #include <complex>
 #include <iostream>

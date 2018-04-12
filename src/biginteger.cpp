@@ -1,7 +1,7 @@
 /* 
-** file: biginteger.h
+** file: biginteger.hpp
 */
-#include "biginteger.h"
+#include "biginteger.hpp"
 using std::cout;
 using std::endl;
 void print_bigint(const bigint *n)
@@ -39,6 +39,13 @@ void copy_bigint(bigint *s, bigint *d)
     d->len = s->len;
     for (int i = d->len; i >= 0; i--)
         d->digits[i] = s->digits[i];
+    d->signbit = s->signbit;
+}
+
+void move_bigint(bigint *s, bigint *d)
+{
+    copy_bigint(s, d);
+	memset(s->digits, 0, MAXINPUT);
 }
 
 void init_bigint(const char *input, int input_length, bigint *out)
@@ -88,7 +95,33 @@ static void sub(bigint *a, bigint *b, bigint *out, int len)
     }
 	out->len = len;   
 }
+// int compare_bigint(bigint *a, bigint *b)
+// {
+//     if (a->len > b->len)
+//     {
+//         return 1;
+//     } 
+//     else if (b->len > a->len)
+//     {
+//         return 2;
+//     }
+//     else
+//     {
+//         for (int i = 0; i < len; i++)
+//         {
+//             if (a->digits[i] > b->digits[i])
+//             {
+//                 return  1;
+//             }
 
+//             if (b->digits[i] > a->digits[i])
+//             {
+//                 k = 2;
+//                 break;
+//             }
+//         }
+//     }
+// }
 void subtract_bigint(bigint *a, bigint *b, bigint *c)
 {
 	int k = 3;
@@ -122,13 +155,16 @@ void subtract_bigint(bigint *a, bigint *b, bigint *c)
 	switch(k) {
 		case 1:	
 			sub(a, b, c, a->len);
+            c->signbit = PLUS;
 			break;
 		case 2:
 			sub(b, a, c, b->len);
+            c->signbit = MINUS;
 			break;
 		case 3:
 			c->len = 0;
 			memset(c->digits, 0, MAXINPUT);
+            c->signbit = PLUS;
 			break;
 	}
 }
@@ -206,6 +242,50 @@ void tenpow(bigint *n, int d)
 	n->len = n->len + d;
 }
 
+void LevelUp(bigint *n)
+{
+  for (int i = n->len ; i >= 1 ;i--)
+    n->digits[i] = n->digits[i-1];
+  if (n->digits[n->len])
+    n->len++;
+}
+
+void div_bigint (const bigint *a,  bigint *b)
+{
+//   bigint res, tmp;
+//   bigint curValue;
+//   for (int i = a->len - 1; i >= 0; i--)
+//   {
+//     LevelUp(&curValue);
+//     curValue.digits[0] = a->digits[i];
+//     // подбираем максимальное число x, такое что b * x <= curValue
+//     int x = 0;
+//     int l = 0, r = 10;
+//     while (l <= r)
+//     {
+//       int m = (l + r) >> 1;
+//       copy_bigint(b, &tmp);
+//       bii_mult(&tmp, m);
+//       if (cur <= curValue)
+//       {
+//         x = m;
+//         l = m+1;
+//       }
+//       else
+//         r = m-1;
+//     }
+//     res.digits[i] = x;
+//     curValue = curValue - b * x;
+//   }
+//   // избавляемся от лидирующих нулей
+//   int pos = a.amount;
+//   while (pos>=0 && !res.digits[pos])
+//     pos--;
+//   res.amount = pos+1;
+ 
+//   return res;
+} 
+
 void bii_division(bigint *in0, long long in_b, long long in_base)
 {
     int carry = 0;
@@ -244,4 +324,37 @@ void bii_mult(bigint *in0, uint64_t b)
         carry = cur / 10;
     }
     in0->len = i;
+}
+
+void modpow_bigint(bigint *b, uint32_t e, bigint *m)
+{
+    bigint a, tmp;
+    copy_bigint(b, &a);
+    
+    // while(e > 0)
+    // {
+    //     if ((e & 1) == 1)
+    //     {
+
+    //     }
+    //     mult_bigint(b, &a, &tmp);
+
+    //     e >>= 1;
+    // }
+}
+
+long modpow(long b, long e, long m) {
+    long result = 1;
+
+    while (e > 0) {
+        if ((e & 1) == 1) {
+            /* multiply in this bit's contribution while using modulus to keep
+             * result small */
+            result = (result * b) % m;
+        }
+        b = (b * b) % m;
+        e >>= 1;
+    }
+
+    return result;
 }
