@@ -40,8 +40,7 @@ void fft_multiply (const vector<int> & a, const vector<int> & b, vector<int> & r
     fft (fa, true);
 
     res.resize (n);
-    
-   
+
     for (size_t i=0; i<n; ++i)
         res[i] = int (fa[i].real() + 0.5);
 
@@ -87,30 +86,55 @@ void karatsuba_multiplication(char *inx, char *iny, bigint *out)
     out->len = s2.len;
 }
 
+// static void toom_cook_mult_helper(bigint *p_q_1, bigint *p_q_2,
+//                                   bigint *p_q_8, bigint *mq2, 
+//                                   bigint *mq1, bigint *mq0)
+// {
+//     bigint tmp, tmp2;
+//     //p_1 = m0 - m1 + m2
+//     copy_bigint(mq1, &tmp); //  save value of m1 due to bad implementation of sub :)
+//     subtract_bigint(mq0, mq1, p_q_1);
+//     move_bigint(&tmp, mq1); 
+//     subtract_bigint(mq2, p_q_1, &tmp); // instead add, subtract was done 
+//     copy_bigint(&tmp, p_q_1);         //due to bad implementation of sign add/sub
+//     // print_bigint(&p_1);
+//     //p_2 = m0 - 2m1 + 4m2
+//     copy_bigint(mq1, &tmp);
+//     bii_mult(&tmp, 2);
+//     subtract_bigint(mq0, &tmp, p_q_2);
+//     copy_bigint(mq2, &tmp);
+//     bii_mult(&tmp, 4);
+//     subtract_bigint(p_q_2, &tmp, &tmp2);
+//     move_bigint(&tmp2, p_q_2);
+//     //p_8 = m2
+//     copy_bigint(mq2, p_q_8);
+
+//     // print_bigint(p_q_1);
+// }
+
 void toom_cook_multiplication(char *inx, char *iny, bigint *out)
 {
-    bigint m2, m1, m0, n2, n1, n0;
-    bigint p0, p1, p_1, p_2, p_8;
-    bigint q0, q1, q_1, q_2, q_8;
-    bigint f0, f1, f2, f3, f4;
-    bigint x, y;
-    bigint tmp;
-    init_bigint(inx, strlen(inx) - 16, &m2);
-    init_bigint(inx + 6, strlen(inx) - 14, &m1);
-    init_bigint(inx + 14, strlen(inx) - 14, &m0);
+//     bigint m2, m1, m0, n2, n1, n0;
+//     bigint p0, p1, p_1, p_2, p_8;
+//     bigint q0, q1, q_1, q_2, q_8;
+//     bigint f0, f1, f2, f3, f4;
+//     bigint x, y;
+//     bigint tmp, tmp2;
+//     init_bigint(inx, strlen(inx) - 16, &m2);
+//     init_bigint(inx + 6, strlen(inx) - 14, &m1);
+//     init_bigint(inx + 14, strlen(inx) - 14, &m0);
 
-    init_bigint(iny, strlen(iny) - 16, &n2);
-    init_bigint(iny + 5, strlen(iny) - 13, &n1);
-    init_bigint(iny + 13, strlen(iny) - 13, &n0);
-    //p0 = m0
-    copy_bigint(&m0, &p0);
-    //p1 = m0+m1+m2
-    copy_bigint(&m1, &p1);
-    add_bigint(&m0, &p1);
-    add_bigint(&m2, &p1);
-    //p_1 = m0 - m1 + m2
-    subtract_bigint(&m0, &m1, &p_1);    
-    print_bigint(&p_1);
-    cout << p_1.signbit << endl;
-    //TODO add signbit check for substract and add
+//     init_bigint(iny, strlen(iny) - 16, &n2);
+//     init_bigint(iny + 5, strlen(iny) - 13, &n1);
+//     init_bigint(iny + 13, strlen(iny) - 13, &n0);
+//     //p0 = m0
+//     copy_bigint(&m0, &p0);
+//     //p1 = m0+m1+m2
+//     copy_bigint(&m1, &p1);
+//     add_bigint(&m0, &p1);
+//     add_bigint(&m2, &p1);
+//     //p_1 = m0 - m1 + m2
+//     toom_cook_mult_helper(&p_1, &p_2, &p_8, &m2, &m1, &m0); 
+      
 }
+

@@ -1,7 +1,10 @@
 #include "bigintarithmetic.hpp"
 #include <iostream>
 #include <openssl/bn.h>
+#include "prg.hpp"
+#ifdef USE_GMP
 #include <gmpxx.h>
+#endif
 enum mult_type {SCHOOL_MULT = 0, KARATSUBA_MULT = 1, FFT_MULT = 2, TOOM_COOK_MULT = 3};
 class Lab_tests
 {
@@ -10,7 +13,8 @@ public:
     uint32_t buf[MAXINPUT];
     uint32_t tmp[MAXINPUT];
 	vector<int> a, b, res;
-    Lab_tests() 
+
+    Lab_tests()
     {
         memset(in0.digits, 0, MAXINPUT);
         memset(in1.digits, 0, MAXINPUT);
@@ -116,55 +120,55 @@ private:
     }
 };
 
-// TEST(Lab_tests, TEST_SCHOOL_ADDING)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "423450987677999999919374659102";
-//     char *input2 = (char *) "123456789012345678901234567890";
-//     char *expected = (char *) "546907776690345678820609226992";
-//     int expected_len = strlen(expected);
+TEST(Lab_tests, TEST_SCHOOL_ADDING)
+{
+    Lab_tests a;
+    char *input1 = (char *) "423450987677999999919374659102";
+    char *input2 = (char *) "123456789012345678901234567890";
+    char *expected = (char *) "546907776690345678820609226992";
+    int expected_len = strlen(expected);
     
-//     a.add(input1, input2);
-//     ASSERT_EQ(0, a.compare(expected, expected_len));
-// }
+    a.add(input1, input2);
+    ASSERT_EQ(0, a.compare(expected, expected_len));
+}
 
-// TEST(Lab_tests, TEST_SCHOOL_MULT_1)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "423450987677999999919374659102";
-//     char *input2 = (char *) "123456789012345678901234567890";
-//     char *expected = (char *) "52277899242832235856329477886283213367390716890807025434780";
-//     int expected_len = strlen(expected);
+TEST(Lab_tests, TEST_SCHOOL_MULT_1)
+{
+    Lab_tests a;
+    char *input1 = (char *) "423450987677999999919374659102";
+    char *input2 = (char *) "123456789012345678901234567890";
+    char *expected = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    int expected_len = strlen(expected);
     
-//     a.mult(input1, input2, 0);
-//     ASSERT_EQ(0, a.compare(expected, expected_len));
-// }
+    a.mult(input1, input2, 0);
+    ASSERT_EQ(0, a.compare(expected, expected_len));
+}
 
-// TEST(Lab_tests, TEST_SCHOOL_MULT_2)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
-//     char *input2 = (char *) "123456789012345678901234567890123456789012345678901234567890123 \
-//                              456789012345678901234567890123456789012345678901234567890";
+TEST(Lab_tests, TEST_SCHOOL_MULT_2)
+{
+    Lab_tests a;
+    char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    char *input2 = (char *) "123456789012345678901234567890123456789012345678901234567890123 \
+                             456789012345678901234567890123456789012345678901234567890";
 
-//     char * expected = (char *) "64540615768310052621962031921066529861506005143621590302554836244455 \
-//                                 48362444554836244455483624445548362444554836244455477170383971531439 \
-//                                 292640041263376971459397761930192677214200";
+    char * expected = (char *) "64540615768310052621962031921066529861506005143621590302554836244455 \
+                                48362444554836244455483624445548362444554836244455477170383971531439 \
+                                292640041263376971459397761930192677214200";
 
-//     int expected_len = strlen(expected);
+    int expected_len = strlen(expected);
     
-//     a.mult(input1, input2, 0);
-//     ASSERT_EQ(0, a.compare(expected, expected_len));
-// }
+    a.mult(input1, input2, 0);
+    ASSERT_EQ(0, a.compare(expected, expected_len));
+}
 
-// TEST(Lab_tests, TEST_FFT_MULT)
-// {
-//     /*5218765431987654321 * 5218765431987654321*/
-//     vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 3, 4, 5, 6, 7, 8, 1, 2, 5};
-//     vector<int> b = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 3, 4, 5, 6, 7, 8, 1, 2, 5};
-//     Lab_tests test(a, b);
-//     test.mult(NULL, NULL, FFT_MULT);
-// }
+TEST(Lab_tests, TEST_FFT_MULT)
+{
+    /*5218765431987654321 * 5218765431987654321*/
+    vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 3, 4, 5, 6, 7, 8, 1, 2, 5};
+    vector<int> b = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 3, 4, 5, 6, 7, 8, 1, 2, 5};
+    Lab_tests test(a, b);
+    test.mult(NULL, NULL, FFT_MULT);
+}
 
 TEST(Lab_tests, TEST_TOOM_COOK_MULT)
 {
@@ -174,21 +178,32 @@ TEST(Lab_tests, TEST_TOOM_COOK_MULT)
     test.mult(input1, input2, TOOM_COOK_MULT);
 }
 
-// TEST(Lab_tests, TEST_MOD)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
-//     uint64_t ret = a.mod(input1, 11);
-//     ASSERT_EQ(7, ret);
-// }
+TEST(Lab_tests, TEST_MOD)
+{
+    Lab_tests a;
+    char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    uint64_t ret = a.mod(input1, 11);
+    ASSERT_EQ(7, ret);
+}
 
+TEST(Lab_tests, TEST_BIGNUM)
+{
+    char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    char *input2 = (char *) "987654321987654321098";
+    bignum a(input1, strlen(input1));
+    bignum b(input2, strlen(input2));
+    a.output();
+    b.output();
+    bignum res = a % b;
+    res.output();
+}
 
-// #ifdef USE_GMP
-// TEST(Lab_tests, TEST_MULT_GMP)
-// {
-    
-// }
-// #endif
+#ifdef USE_GMP
+TEST(Lab_tests, TEST_MULT_GMP)
+{
+
+}
+#endif
 
 TEST(Lab_tests, TEST_MULT_OPENSSL)
 {
@@ -230,39 +245,39 @@ TEST(Lab_tests, TEST_ADD_OPENSSL)
     BN_CTX_free(bn_ctx);
 }
 
-// TEST(Lab_tests, TEST_KARATSUBA_MULT_1)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "423450987677999999919374659102";
-//     char *input2 = (char *) "123456789012345678901234567890";
-//     char *expected = (char *) "52277899242832235856329477886283213367390716890807025434780";
-//     int expected_len = strlen(expected);
+TEST(Lab_tests, TEST_KARATSUBA_MULT_1)
+{
+    Lab_tests a;
+    char *input1 = (char *) "423450987677999999919374659102";
+    char *input2 = (char *) "123456789012345678901234567890";
+    char *expected = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    int expected_len = strlen(expected);
     
-//     a.mult(input1, input2, 1);
-//     ASSERT_EQ(2, a.compare(expected, expected_len));
-// }
+    a.mult(input1, input2, 1);
+    ASSERT_EQ(1, a.compare(expected, expected_len));
+}
 
-// TEST(Lab_tests, TEST_KARATSUBA_MULT_2)
-// {
-//     Lab_tests a;
-//     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
-//     char *input2 = (char *) "123456789012345678901234567890123456789012345678901234567890123 \
-//                              456789012345678901234567890123456789012345678901234567890";
+TEST(Lab_tests, TEST_KARATSUBA_MULT_2)
+{
+    Lab_tests a;
+    char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
+    char *input2 = (char *) "123456789012345678901234567890123456789012345678901234567890123 \
+                             456789012345678901234567890123456789012345678901234567890";
 
-//     char * expected = (char *)"64540615768310052621962031921066529861506005143621590302554836244455 \
-//                                48362444554836244455483624445548362444554836244455477170383971531439 \
-//                                292640041263376971459397761930192677214200";
+    char * expected = (char *)"64540615768310052621962031921066529861506005143621590302554836244455 \
+                               48362444554836244455483624445548362444554836244455477170383971531439 \
+                               292640041263376971459397761930192677214200";
 
-//     int expected_len = strlen(expected);
+    int expected_len = strlen(expected);
     
-//     a.mult(input1, input2, 1);
-//     ASSERT_EQ(-1, a.compare(expected, expected_len));
-// }
+    a.mult(input1, input2, 1);
+    ASSERT_EQ(-1, a.compare(expected, expected_len));
+}
 
 int main(int argc, char **argv)
 {
     printf("Running main()\n");
-
+    // bbs();
 	testing::InitGoogleTest(&argc, argv);
     
 	return RUN_ALL_TESTS();
