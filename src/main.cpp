@@ -1,7 +1,7 @@
 #include "bigintarithmetic.hpp"
 #include <iostream>
 #include <openssl/bn.h>
-#include "prg.hpp"
+#include "prng.hpp"
 #ifdef USE_GMP
 #include <gmpxx.h>
 #endif
