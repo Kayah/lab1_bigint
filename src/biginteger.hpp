@@ -29,15 +29,20 @@ typedef struct
 const int osn = 10;
 class bignum
 {  
+public:
     bool isMinus;
     int amount;
     int digits[MAXINPUT];
 
-public:
-
     bignum() : amount(1), isMinus(false)
     {
         memset(digits, 0, MAXINPUT);
+    }
+    bignum(const bignum &a): isMinus(a.isMinus), amount(a.amount)
+    {
+        memset(digits, 0, MAXINPUT);
+        for (int i = 0; i < amount; i++)
+            digits[i] = a.digits[i];
     }
     ~bignum()
     {}
@@ -46,15 +51,14 @@ public:
         memset(digits, 0, MAXINPUT);
         int i, j;
         for (i = 0, j = amount-1; i < amount; i++, j--)
-        {
             digits[i] = input[j] - '0';
-        }
 	    this->amount = amount;
     }
     void input();
     void output();
     void LevelUp();
     friend bignum operator /(const bignum &a, const bignum &b);
+    friend bignum operator / (const bignum &a, const int &n);
     friend bignum operator *(const bignum &a, const bignum &b);
     friend bignum operator *(const bignum &a, const int &n);
     friend bignum operator -(const bignum &a, const bignum &b);
@@ -62,7 +66,9 @@ public:
     friend bool operator > (const bignum &a, const bignum &b);
     friend bool operator < (const bignum &a, const bignum &b);
     friend bignum operator % (const bignum &a, const bignum &b);
+    friend bignum operator + (const bignum &a, const bignum &b);
     friend bignum minus(const bignum &a, const bignum &b);
+    friend bignum add(const bignum &a, const bignum &b);
 };
 
 int base_calc(bigint *in);

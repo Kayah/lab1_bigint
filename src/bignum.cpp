@@ -26,6 +26,28 @@ void bignum::LevelUp()
         amount++;
 } 
 
+bignum operator + (const bignum &a, const bignum &b)
+{
+    bignum res;
+    res.amount = std::max(a.amount,b.amount);
+    int r = 0;
+    for (int i=0;i<res.amount | r;i++)
+    {
+        res.digits[i] = a.digits[i] + b.digits[i] + r;
+        if (res.digits[i]>=osn)
+        {
+            res.digits[i]-=osn;
+            r = 1;
+        }
+        else
+            r = 0;
+    }
+    if (res.digits[res.amount])
+        res.amount++; 
+    
+    return res;
+}
+
 bignum operator * (const bignum &a, const bignum &b)
 {
     bignum res;
@@ -43,6 +65,11 @@ bignum operator * (const bignum &a, const bignum &b)
     while (pos>0 && !res.digits[pos])
           pos--;
     res.amount = pos + 1;
+    if (a.isMinus && b.isMinus)
+        res.isMinus = false;
+    else if ((a.isMinus && !b.isMinus) || (!a.isMinus && b.isMinus))
+        res.isMinus = true;
+    
     return res;
 }
 
@@ -118,6 +145,25 @@ bool operator < (const bignum &a, const bignum &b)
     return false;
 }
 
+bignum add(const bignum &a, const bignum &b)
+{
+    bignum c;
+    
+    if (a.isMinus && !b.isMinus)
+    {
+        c = minus(b,a);
+    }
+    else if (!a.isMinus && b.isMinus)
+    {
+        c = minus(a,b);
+    }
+    else
+    {
+        c = a + b;
+    }
+    return c;
+}
+
 bignum minus(const bignum &a, const bignum &b)
 {
     bignum c;
@@ -128,9 +174,18 @@ bignum minus(const bignum &a, const bignum &b)
     }
     else
         c = a - b; 
-    if (c.isMinus) 
-        std::cout<<"-";
-    c.output(); 
+    if (a.isMinus && b.isMinus)
+    {
+        c = a + b;
+        c.isMinus = true;
+    }
+    // if (c.isMinus) 
+    // {
+        // std::cout<<"-";
+        // c.digits[c.amount - 1] *= -1;
+    // }    
+    // c.output(); 
+    return c;
 }
 
 bignum operator / (const bignum &a, const bignum &b)
@@ -164,6 +219,24 @@ bignum operator / (const bignum &a, const bignum &b)
     res.amount = pos+1;
     return res;
 }
+
+bignum operator / (const bignum &a, const int &n)
+{
+    bignum res;
+    res.amount = a.amount;
+    int ost = 0;
+    for (int i=res.amount-1;i>=0;i--)
+    {
+        int cur = ost * osn + a.digits[i];
+        res.digits[i] = cur / n;
+        ost = cur % n;
+    }
+    if (!res.digits[res.amount-1] && res.amount != 1)
+        res.amount--;
+    
+    res.isMinus = a.isMinus;
+    return res;
+} 
 
 bignum operator % (const bignum &a, const bignum &b)
 {

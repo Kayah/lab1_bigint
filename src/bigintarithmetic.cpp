@@ -86,55 +86,81 @@ void karatsuba_multiplication(char *inx, char *iny, bigint *out)
     out->len = s2.len;
 }
 
-// static void toom_cook_mult_helper(bigint *p_q_1, bigint *p_q_2,
-//                                   bigint *p_q_8, bigint *mq2, 
-//                                   bigint *mq1, bigint *mq0)
-// {
-//     bigint tmp, tmp2;
-//     //p_1 = m0 - m1 + m2
-//     copy_bigint(mq1, &tmp); //  save value of m1 due to bad implementation of sub :)
-//     subtract_bigint(mq0, mq1, p_q_1);
-//     move_bigint(&tmp, mq1); 
-//     subtract_bigint(mq2, p_q_1, &tmp); // instead add, subtract was done 
-//     copy_bigint(&tmp, p_q_1);         //due to bad implementation of sign add/sub
-//     // print_bigint(&p_1);
-//     //p_2 = m0 - 2m1 + 4m2
-//     copy_bigint(mq1, &tmp);
-//     bii_mult(&tmp, 2);
-//     subtract_bigint(mq0, &tmp, p_q_2);
-//     copy_bigint(mq2, &tmp);
-//     bii_mult(&tmp, 4);
-//     subtract_bigint(p_q_2, &tmp, &tmp2);
-//     move_bigint(&tmp2, p_q_2);
-//     //p_8 = m2
-//     copy_bigint(mq2, p_q_8);
-
-//     // print_bigint(p_q_1);
-// }
-
-void toom_cook_multiplication(char *inx, char *iny, bigint *out)
+bignum toom_cook_multiplication(char *inx, char *iny)
 {
-//     bigint m2, m1, m0, n2, n1, n0;
-//     bigint p0, p1, p_1, p_2, p_8;
-//     bigint q0, q1, q_1, q_2, q_8;
-//     bigint f0, f1, f2, f3, f4;
-//     bigint x, y;
-//     bigint tmp, tmp2;
-//     init_bigint(inx, strlen(inx) - 16, &m2);
-//     init_bigint(inx + 6, strlen(inx) - 14, &m1);
-//     init_bigint(inx + 14, strlen(inx) - 14, &m0);
+    size_t inx_len = strlen(inx) / 3;
+    size_t iny_len = strlen(iny) / 3;
+    bignum x(inx, strlen(inx));
+    bignum y(iny, strlen(iny));
+    bignum out = x * y;
+    bignum m2(inx, inx_len);
+    bignum m1(inx + inx_len, inx_len);
+    bignum m0(inx + (inx_len * 2), inx_len);
+    
+    bignum n2(iny, iny_len);
+    bignum n1(iny + iny_len, iny_len);
+    bignum n0(iny + (iny_len * 2), iny_len);
+    //p0 = m0
+    bignum p0 = m0;
+    bignum q0 = n0;
+    //p1 = m0+m1+m2
+    bignum p1 = m0 + m1 + m2;
+    bignum q1 = n0 + n1 + n2;
+    // p_1 = m0 - m1 + m2
+    bignum tmp = minus(m0, m1);
+    bignum p_1 = add(tmp, m2);
+    tmp = minus(n0, n1);
+    bignum q_1 = add(tmp, n2);
+    // p_2 = m0 - 2m1 + 4m2
+    tmp = m1;
+    tmp = tmp * 2;
+    bignum p_2 = minus(m0, tmp);// + (m2 * 4);
+    p_2 = add (p_2, (m2*4));
+    tmp = n1;
+    tmp = tmp * 2;
+    bignum q_2 = minus(n0, tmp);
+    q_2 = add (q_2, (n2 * 4));
+    // p_8 = m2
+    bignum p_8 = m2;
+    bignum q_8 = n2;
 
-//     init_bigint(iny, strlen(iny) - 16, &n2);
-//     init_bigint(iny + 5, strlen(iny) - 13, &n1);
-//     init_bigint(iny + 13, strlen(iny) - 13, &n0);
-//     //p0 = m0
-//     copy_bigint(&m0, &p0);
-//     //p1 = m0+m1+m2
-//     copy_bigint(&m1, &p1);
-//     add_bigint(&m0, &p1);
-//     add_bigint(&m2, &p1);
-//     //p_1 = m0 - m1 + m2
-//     toom_cook_mult_helper(&p_1, &p_2, &p_8, &m2, &m1, &m0); 
-      
+    bignum r0 = p0 * q0;
+    bignum r1 = p1 * q1;
+    bignum r_1 = p_1 * q_1;
+    bignum r_2 = p_2 * q_2;
+    bignum r_8 = p_8 * q_8;
+
+    bignum f0 = r0;
+    bignum f4 = r_8;
+    
+    bignum f3 = (minus(r_2, r1)) / 3;
+    bignum f1 = (minus(r1, r_1)) / 2;
+    
+    bignum f2 = minus(r_1, r0);
+    tmp = (minus(f2, f3)) / 2;
+    
+    f3 = add(tmp, (r_8 * 2));
+    tmp = minus(f1, f4);
+    f2 = add(f2, tmp);
+    f1 = minus(f1, f3);
+
+    // f0.output();
+    // cout << f0.isMinus << endl;
+    // f1.output();
+    // cout << f1.isMinus << endl;
+    // f2.output();
+    // cout << f2.isMinus << endl;
+    // f3.output();
+    // cout << f3.isMinus << endl;
+    // f4.output();
+    // cout << f4.isMinus << endl;
+    
+//                             24539087753298
+//                      97685914820918
+//            104845274440835
+//        20040743684080
+// 12193254061881
+// 121932631246761163249178478656461057753298
+    return out;
 }
 
