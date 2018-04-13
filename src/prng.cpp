@@ -1,4 +1,4 @@
-#include "prg.hpp"
+#include "prng.hpp"
 #include <math.h>
 #include <gmpxx.h>
 void bbs()

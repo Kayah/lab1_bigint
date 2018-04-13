@@ -43,7 +43,7 @@ SRCS= $(SOURCE_DIR)/bigintarithmetic.cpp \
 	  $(SOURCE_DIR)/bignum.cpp 
 
 ifeq ($(USE_GMP), y)
-SRCS += $(SOURCE_DIR)/prg.cpp
+SRCS += $(SOURCE_DIR)/prng.cpp
 endif
 
 OBJS=$(SRCS:.cpp=.o)
