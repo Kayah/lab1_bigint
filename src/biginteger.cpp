@@ -271,31 +271,8 @@ void bii_mult(bigint *in0, uint64_t b)
 
 void modpow_bigint(bigint *b, uint32_t e, bigint *m)
 {
-    bigint a, tmp;
-    copy_bigint(b, &a);
-    
-    // while(e > 0)
-    // {
-    //     if ((e & 1) == 1)
-    //     {
-
-    //     }
-    //     mult_bigint(b, &a, &tmp);
-
-    //     e >>= 1;
-    // }
-}
-
-long modpow(long b, long e, long m) {
-    long result = 1;
-
-    while (e > 0) {
-        if ((e & 1) == 1) {
-            result = (result * b) % m;
-        }
-        b = (b * b) % m;
-        e >>= 1;
-    }
-
-    return result;
+    (void)b;
+    (void)e;
+    (void)m;
+    cout << "Not implemented " << endl;
 }

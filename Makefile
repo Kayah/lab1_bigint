@@ -20,7 +20,7 @@ ifeq ($(USE_GMP), y)
 ifeq (, $(shell locate gmp))
 $(error "gmp is not installed, please do apt-get install libgmp3-dev")
 else 
-LIB +=-lgmp
+LIB +=-lgmp -lgmpxx
 endif
 endif
 

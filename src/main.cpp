@@ -125,7 +125,7 @@ private:
     }
 };
 
-TEST(Lab_tests, TEST_SCHOOL_ADDING)
+TEST(Lab_tests, DISABLED_TEST_SCHOOL_ADDING)
 {
     Lab_tests a;
     char *input1 = (char *) "423450987677999999919374659102";
@@ -137,7 +137,7 @@ TEST(Lab_tests, TEST_SCHOOL_ADDING)
     ASSERT_EQ(0, a.compare(expected, expected_len));
 }
 
-TEST(Lab_tests, TEST_SCHOOL_MULT_1)
+TEST(Lab_tests, DISABLED_TEST_SCHOOL_MULT_1)
 {
     Lab_tests a;
     char *input1 = (char *) "423450987677999999919374659102";
@@ -149,7 +149,7 @@ TEST(Lab_tests, TEST_SCHOOL_MULT_1)
     ASSERT_EQ(0, a.compare(expected, expected_len));
 }
 
-TEST(Lab_tests, TEST_SCHOOL_MULT_2)
+TEST(Lab_tests, DISABLED_TEST_SCHOOL_MULT_2)
 {
     Lab_tests a;
     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
@@ -166,7 +166,7 @@ TEST(Lab_tests, TEST_SCHOOL_MULT_2)
     ASSERT_EQ(0, a.compare(expected, expected_len));
 }
 
-TEST(Lab_tests, TEST_FFT_MULT)
+TEST(Lab_tests, DISABLED_TEST_FFT_MULT)
 {
     /*5218765431987654321 * 5218765431987654321*/
     vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 3, 4, 5, 6, 7, 8, 1, 2, 5};
@@ -175,7 +175,7 @@ TEST(Lab_tests, TEST_FFT_MULT)
     test.mult(NULL, NULL, FFT_MULT);
 }
 
-TEST(Lab_tests, TEST_TOOM_COOK_MULT)
+TEST(Lab_tests, DISABLED_TEST_TOOM_COOK_MULT)
 {
     Lab_tests test;          
     char *input1 = (char *) "123456789012345678901";
@@ -185,7 +185,7 @@ TEST(Lab_tests, TEST_TOOM_COOK_MULT)
     out.output();
 }
 
-TEST(Lab_tests, TEST_MOD)
+TEST(Lab_tests, DISABLED_TEST_MOD)
 {
     Lab_tests a;
     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
@@ -193,26 +193,34 @@ TEST(Lab_tests, TEST_MOD)
     ASSERT_EQ(7, ret);
 }
 
-TEST(Lab_tests, TEST_BIGNUM)
+TEST(Lab_tests, DISABLED_TEST_BIGNUM)
 {
     char *input1 = (char *) "52277899242832235856329477886283213367390716890807025434780";
     char *input2 = (char *) "987654321987654321098";
     bignum a(input1, strlen(input1));
     bignum b(input2, strlen(input2));
-    a.output();
-    b.output();
     bignum res = a % b;
-    res.output();
 }
 
+TEST(Lab_tests, TEST_BBS)
+{
+    bbs_bignum();
+}
+
+TEST(Lab_tests, TEST_BLUM_MIKALI)
+{
+    blum_mikali_byte();
+}
+
+
 #ifdef USE_GMP
-TEST(Lab_tests, TEST_MULT_GMP)
+TEST(Lab_tests, DISABLED_TEST_MULT_GMP)
 {
 
 }
 #endif
 
-TEST(Lab_tests, TEST_MULT_OPENSSL)
+TEST(Lab_tests, DISABLED_TEST_MULT_OPENSSL)
 {
     BIGNUM *bn1 = NULL;
 	BIGNUM *bn2 = NULL;
@@ -232,7 +240,7 @@ TEST(Lab_tests, TEST_MULT_OPENSSL)
     BN_CTX_free(bn_ctx);
 }
 
-TEST(Lab_tests, TEST_ADD_OPENSSL)
+TEST(Lab_tests, DISABLED_TEST_ADD_OPENSSL)
 {
     BIGNUM *bn1 = NULL;
 	BIGNUM *bn2 = NULL;
@@ -284,7 +292,6 @@ TEST(Lab_tests, DISABLED_TEST_KARATSUBA_MULT_2)
 int main(int argc, char **argv)
 {
     printf("Running main()\n");
-    // bbs();
 	testing::InitGoogleTest(&argc, argv);
     
 	return RUN_ALL_TESTS();

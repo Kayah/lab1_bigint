@@ -26,6 +26,18 @@ void bignum::LevelUp()
         amount++;
 } 
 
+uint64_t bignum::toint()
+{
+    uint64_t result = 0;
+    uint64_t tmp = 1;
+    for (int i = 0; i < 4; i++)
+    {
+        result = result + digits[i] * tmp;
+        tmp *= 10;
+    }
+    return result;
+}
+
 bignum operator + (const bignum &a, const bignum &b)
 {
     bignum res;
@@ -109,6 +121,30 @@ bignum operator - (const bignum &a, const bignum &b)
   return res;
 }
 
+bignum operator -(const bignum &a, const int b)
+{
+    bignum res = a;
+    int pos = 0;
+    res.digits[0] -= b;
+    
+    while(res.digits[pos] < 0)
+    {
+        res.digits[pos+1] --;
+        res.digits[pos++] +=osn;
+    }
+
+    if (res.amount && !res.digits[res.amount-1])
+        res.amount--;
+    return res;
+}
+
+bool operator == (const bignum &a, const int &n)
+{
+    if (a.digits[0] != n)
+          return false;
+    return true;
+}
+
 bool operator == (const bignum &a, const bignum &b)
 {
     if (a.amount!=b.amount)
@@ -120,6 +156,17 @@ bool operator == (const bignum &a, const bignum &b)
     }
     return true;
 }
+
+// bignum operator &(const bignum &a, const int b)
+// {
+//     bignum result;
+//     std::cout << "NOT IMPLEMENTED : " << __func__ << std::endl;
+//     // for (int i = a.amount - 1; i >=0; i--)
+//     // {
+//     //     result.digits[i] = a.digits[i] & b;
+//     // }
+//     return result;
+// }
 
 bool operator > (const bignum &a, const bignum &b)
 {
@@ -179,12 +226,7 @@ bignum minus(const bignum &a, const bignum &b)
         c = a + b;
         c.isMinus = true;
     }
-    // if (c.isMinus) 
-    // {
-        // std::cout<<"-";
-        // c.digits[c.amount - 1] *= -1;
-    // }    
-    // c.output(); 
+    
     return c;
 }
 
@@ -266,3 +308,20 @@ bignum operator % (const bignum &a, const bignum &b)
     return curValue;
 }
 
+bignum bignum_modpow(bignum &b, bignum &e, bignum &m)
+{
+    bignum result(1);
+    while(e > 0)
+    {
+        // e.output();
+        if ((e.digits[0] & 1) == 1)
+        {
+            // std::cout << " mod = 1  "; e.output(); std::cout << std::endl;
+            result = (result * b) % m;
+        }
+        b = (b * b) % m;
+        e = e / 2;
+    }
+    
+    return result;
+}
