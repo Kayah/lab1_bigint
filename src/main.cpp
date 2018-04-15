@@ -232,6 +232,8 @@ TEST(Lab_tests, TEST_RSA)
     sign(message, signature, rsa);
     cout << "Signature = " << signature << endl;
     verify(message, signature, rsa);
+    secret_pair sp = send_secret(rsa, rsa.n, rsa.e, message);
+    recieve_key(rsa, rsa.n, rsa.d, sp);
 }
 
 #ifdef USE_GMP
