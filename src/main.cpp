@@ -2,6 +2,7 @@
 #include <iostream>
 #include <openssl/bn.h>
 #include "prng.hpp"
+#include "rsa.hpp"
 #ifdef USE_GMP
 #include <gmpxx.h>
 #endif
@@ -202,16 +203,36 @@ TEST(Lab_tests, DISABLED_TEST_BIGNUM)
     bignum res = a % b;
 }
 
-TEST(Lab_tests, TEST_BBS)
+TEST(Lab_tests, DISABLED_TEST_BBS)
 {
     bbs_bignum();
 }
 
-TEST(Lab_tests, TEST_BLUM_MIKALI)
+TEST(Lab_tests, DISABLED_TEST_BLUM_MIKALI)
 {
     blum_mikali_byte();
 }
 
+TEST(Lab_tests, TEST_RSA)
+{
+    mpz_class
+           p("25B0C52E797C3AADFC5F0938972B87A465D9E5373EB530362BA0A21084A1E7A5", 16),
+           q("EDD3D25D544D30A6BC0714B50DF4C3427959C5066136F69218335EAFF2C0220C3F", 16 ),
+           e("10001", 16),
+           message("32EEB5F5DC5F7C980BA74E4383ABE7A0440A961976A96B07E13BB94A1F1F7FF8", 16);
+    rsa_ctx rsa = generate_keys(p, q, e);
+    mpz_class encrypted;
+    encrypt(message, encrypted, rsa);
+    cout << "Message = " << message << endl;
+    cout << "Encrypted message = " << encrypted << endl;
+    mpz_class decrypted;
+    decrypt(encrypted, decrypted, rsa);
+    cout << "Decrypted message = " << decrypted << endl;
+    mpz_class signature;
+    sign(message, signature, rsa);
+    cout << "Signature = " << signature << endl;
+    verify(message, signature, rsa);
+}
 
 #ifdef USE_GMP
 TEST(Lab_tests, DISABLED_TEST_MULT_GMP)

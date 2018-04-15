@@ -40,7 +40,8 @@ SOURCE_DIR = src
 SRCS= $(SOURCE_DIR)/bigintarithmetic.cpp \
 	  $(SOURCE_DIR)/biginteger.cpp\
 	  $(SOURCE_DIR)/main.cpp\
-	  $(SOURCE_DIR)/bignum.cpp 
+	  $(SOURCE_DIR)/bignum.cpp\
+	  $(SOURCE_DIR)/rsa.cpp 
 
 ifeq ($(USE_GMP), y)
 SRCS += $(SOURCE_DIR)/prng.cpp

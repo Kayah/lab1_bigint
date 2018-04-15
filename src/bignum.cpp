@@ -1,26 +1,15 @@
 #include "biginteger.hpp"
 
-void bignum::input()
-{
-    memset(digits,0,sizeof(digits));
-    std::string str;
-    std::cin >> str;
-    int pos = 0;
-    for (int i=str.size()-1;i>=0;i--)
-      digits[pos++] = str[i] - '0';
-    amount = str.size();
-} 
-
 void bignum::output()
 {
-    for (int i=amount-1;i>=0;i--)
-        std::cout<<digits[i];
-    std::cout<<std::endl;
+    for (int i = amount-1 ; i >= 0; i--)
+        std::cout << digits[i];
+    std::cout << std::endl;
 }
 
 void bignum::LevelUp()
 {
-    for (int i = amount;i>=1;i--)
+    for (int i = amount; i >= 1; i--)
         digits[i] = digits[i-1];
     if (digits[amount])
         amount++;
@@ -105,19 +94,19 @@ bignum operator - (const bignum &a, const bignum &b)
 {
   bignum res = a;
   int r = 0;
-  for (int i = 0;i<res.amount;i++)
+  for (int i = 0; i < res.amount; i++)
   {
     res.digits[i] -= b.digits[i] + r;
-    if (res.digits[i]<0)
+    if (res.digits[i] < 0)
     {
-      res.digits[i]+=osn;
+      res.digits[i] += osn;
       res.digits[i+1]--;
     }   
   }
   int pos = res.amount;
   while (pos && !res.digits[pos])
     pos--;
-  res.amount = pos+1;
+  res.amount = pos + 1;
   return res;
 }
 
@@ -147,11 +136,11 @@ bool operator == (const bignum &a, const int &n)
 
 bool operator == (const bignum &a, const bignum &b)
 {
-    if (a.amount!=b.amount)
+    if (a.amount != b.amount)
           return false;
-    for (int i=0;i<a.amount;i++)
+    for (int i=0; i < a.amount; i++)
     {
-        if (a.digits[i]!=b.digits[i])
+        if (a.digits[i] != b.digits[i])
             return false;
     }
     return true;
@@ -170,24 +159,24 @@ bool operator == (const bignum &a, const bignum &b)
 
 bool operator > (const bignum &a, const bignum &b)
 {
-    if (a.amount!=b.amount)
-        return a.amount>b.amount;
-    for (int i=a.amount-1;i>=0;i--)
+    if (a.amount != b.amount)
+        return a.amount > b.amount;
+    for (int i = a.amount-1; i >= 0; i--)
     {
-        if (a.digits[i]!=b.digits[i])
-            return a.digits[i]>b.digits[i];
+        if (a.digits[i] != b.digits[i])
+            return a.digits[i] > b.digits[i];
     }
     return false;
 }
 
 bool operator < (const bignum &a, const bignum &b)
 {
-    if (a.amount!=b.amount)
-        return a.amount<b.amount;
-    for (int i=a.amount-1;i>=0;i--)
+    if (a.amount != b.amount)
+        return a.amount < b.amount;
+    for (int i = a.amount-1; i >= 0; i--)
     {
-        if (a.digits[i]!=b.digits[i])
-            return a.digits[i]<b.digits[i];
+        if (a.digits[i] != b.digits[i])
+            return a.digits[i] < b.digits[i];
     }
     return false;
 }
@@ -234,13 +223,13 @@ bignum operator / (const bignum &a, const bignum &b)
 {
     bignum res;
     bignum curValue;
-    for (int i = a.amount-1; i>=0; i--)
+    for (int i = a.amount-1; i >= 0; i--)
     {
         curValue.LevelUp();
         curValue.digits[0] = a.digits[i];
         int x = 0;
         int l = 0, r = osn;
-        while (l <= r)
+        while(l <= r)
         {
             int m = (l + r) >> 1;
             bignum cur = b * m;
@@ -256,9 +245,9 @@ bignum operator / (const bignum &a, const bignum &b)
         curValue = curValue - b * x;
     } 
     int pos = a.amount;
-    while (pos>=0 && !res.digits[pos])
+    while(pos >= 0 && !res.digits[pos])
         pos--;
-    res.amount = pos+1;
+    res.amount = pos + 1;
     return res;
 }
 
@@ -267,7 +256,7 @@ bignum operator / (const bignum &a, const int &n)
     bignum res;
     res.amount = a.amount;
     int ost = 0;
-    for (int i=res.amount-1;i>=0;i--)
+    for (int i = res.amount-1; i >= 0; i--)
     {
         int cur = ost * osn + a.digits[i];
         res.digits[i] = cur / n;
@@ -290,17 +279,17 @@ bignum operator % (const bignum &a, const bignum &b)
         curValue.digits[0] = a.digits[i];
         int x = 0;
         int l = 0, r = osn;
-        while (l <= r)
+        while(l <= r)
         {
             int m = (l + r) >> 1;
             bignum cur = b * m;
             if (!(cur > curValue))
             {
                 x = m;
-                l = m+1;
+                l = m + 1;
             }   
             else
-                r = m-1;
+                r = m - 1;
         }
         res.digits[i] = x;
         curValue = curValue - b * x;
@@ -311,17 +300,17 @@ bignum operator % (const bignum &a, const bignum &b)
 bignum bignum_modpow(bignum &b, bignum &e, bignum &m)
 {
     bignum result(1);
-    while(e > 0)
-    {
+    // while(e > 0)
+    // {
         // e.output();
-        if ((e.digits[0] & 1) == 1)
-        {
+        // if ((e.digits[0] & 1) == 1)
+        // {
             // std::cout << " mod = 1  "; e.output(); std::cout << std::endl;
-            result = (result * b) % m;
-        }
-        b = (b * b) % m;
-        e = e / 2;
-    }
-    
+            // result = (result * b) % m;
+        // }
+        // b = (b * b) % m;
+        // e = e / 2;
+    // }
+    std::cout << "NOT IMPLEMENTED : " << __func__ << std::endl;
     return result;
 }
